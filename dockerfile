@@ -51,7 +51,6 @@ RUN /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
-RUN env | grep proxy >> .bashrc && env | grep PATH >> .bashrc && mv .bashrc /root/
 RUN mv /root/Software/dotFiles/.tmux.conf /root/.tmux.conf
 RUN git clone https://github.com/tmux-plugins/tmux-resurrect /root/Software/tmux-resurrect
 WORKDIR /root
