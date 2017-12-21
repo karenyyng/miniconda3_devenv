@@ -1,8 +1,12 @@
+# ======================================================================
+# usage for interactive sessions: 
+# $ docker-compose run --service-ports devenv bash
+# ======================================================================
 version: "3"
 services: 
   devenv: 
-    image: karenyng/devenv:0.1.0
+    image: karenyng/miniconda3_devenv:latest
     volumes:
-      - ~/Documents/project_portfolio/:/root/Software/project_portfolio
-      #  ports:
-      #    - "42424-42434"
+      - ~/Documents/Projects/:/root/Software/Projects
+    ports:
+      - "42424-42434"

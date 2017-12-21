@@ -1,3 +1,10 @@
+# ======================================================================
+# usage: docker run -ti -p 8888:8888 karenyng/miniconda3_devenv:latest 
+# within the container, use jupyter notebook with:
+# $ jupyter notebook --ip 0.0.0.0 --no-browser --allow-root -v ${PWD}:/code/DataScience
+# then navigate to your local browser and go to the url:
+# 127.0.0.1:8888
+# ======================================================================
 FROM continuumio/miniconda3:latest
 MAINTAINER Karen Ng <karen.yyng@gmail.com>
 
@@ -48,9 +55,13 @@ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +PlugInstall +qall
 WORKDIR /root/.config/nvim/plug/YouCompleteMe/
 RUN /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
+WORKDIR /root/.config/nvim/plug/python-mode
+RUN git checkout tags/0.9.0
+RUN pip install --upgrade pylint pyflakes pep8
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
 RUN mv /root/Software/dotFiles/.tmux.conf /root/.tmux.conf
 RUN git clone https://github.com/tmux-plugins/tmux-resurrect /root/Software/tmux-resurrect
 WORKDIR /root
+
