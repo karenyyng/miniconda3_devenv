@@ -11,12 +11,17 @@ MAINTAINER Karen Ng <karen.yyng@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN chsh -s /bin/bash root
 RUN echo 'geronimo\ngeronimo' | passwd root
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN touch /root/.bashrc
 ENV PATH /opt/conda/bin:$PATH
 RUN echo "PATH=$PATH" >> /root/.bashrc
 RUN echo 'deb http://ftp.us.debian.org/debian experimental main' >> /etc/apt/sources.list
 RUN echo 'deb http://ftp.us.debian.org/debian sid main' >> /etc/apt/sources.list
+
+# switch to use python 3.5.2
+RUN conda install -y python=3.5.2
+
+# clean up downloaded python packages 
+RUN conda clean --all
 
 # install libraries needed for installation of other libraries
 RUN apt update -y && apt install -y build-essential \ 
@@ -28,9 +33,13 @@ neovim-runtime \
 unzip \
 wget 
 ### make sure we have all the python utilities to make ipython and conda useful 
-RUN apt install -y ncurses-dev xorg-dev 
+RUN apt install -y ncurses-dev xorg-dev locales locales-all
+ENV LANG en_US.UTF-8 
+ENV LC_ALL en_US.UTF-8 
+ENV LANGUAGE en_US.UTF-8
 RUN pip install --upgrade gnureadline binstar
 RUN apt-get autoremove -y
+
 
 ### ---------  set up personal work env ------------------  
 RUN apt install -y \
@@ -44,7 +53,7 @@ RUN mkdir /root/Software
 WORKDIR /root/Software
 RUN git clone https://github.com/karenyyng/dotFiles.git
 WORKDIR ./dotFiles
-RUN git checkout linux 
+RUN git checkout docker
 
 ### vim specific settings 
 RUN mkdir -p /root/.config/nvim 
@@ -61,7 +70,8 @@ RUN pip install --upgrade pylint pyflakes pep8
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
+RUN cat /root/Software/dotFiles/.bashrc >> /root/.bashrc
 RUN mv /root/Software/dotFiles/.tmux.conf /root/.tmux.conf
 RUN git clone https://github.com/tmux-plugins/tmux-resurrect /root/Software/tmux-resurrect
 WORKDIR /root
-
+ENV USER root
