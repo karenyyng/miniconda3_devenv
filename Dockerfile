@@ -18,37 +18,33 @@ RUN echo 'deb http://ftp.us.debian.org/debian experimental main' >> /etc/apt/sou
 RUN echo 'deb http://ftp.us.debian.org/debian sid main' >> /etc/apt/sources.list
 
 # switch to use python 3.5.2
-RUN conda install -y python=3.5.2
-
-# clean up downloaded python packages 
-RUN conda clean --all
+RUN conda install -y python=3.5.2 && conda clean --all
 
 # install libraries needed for installation of other libraries
-RUN apt update -y && apt install -y build-essential \ 
+RUN apt update -y && apt install --no-install-recommends -y build-essential \ 
 cmake \
 git \ 
 locate \
 neovim \
 neovim-runtime \
 unzip \
-wget 
+wget && rm -rf /var/lib/apt/list/* 
 ### make sure we have all the python utilities to make ipython and conda useful 
-RUN apt install -y ncurses-dev xorg-dev locales locales-all
+RUN apt install -y libncurses5-dev libncursesw5-dev xorg-dev locales locales-all && rm -rf /var/lib/apt/list/* 
 ENV LANG en_US.UTF-8 
 ENV LC_ALL en_US.UTF-8 
 ENV LANGUAGE en_US.UTF-8
-RUN pip install --upgrade gnureadline binstar
-RUN apt-get autoremove -y
+RUN pip install --no-cache-dir --upgrade gnureadline binstar
 
 
 ### ---------  set up personal work env ------------------  
-RUN apt install -y \
+RUN apt install --no-install-recommends -y \
 exuberant-ctags \
 python3-neovim \
 # for youcompleteme
 python-dev \  
-tmux 
-RUN pip install --upgrade neovim
+tmux && rm -rf /var/lib/apt/list/* 
+RUN pip install --no-cache-dir --upgrade neovim
 RUN mkdir /root/Software 
 WORKDIR /root/Software
 RUN git clone https://github.com/karenyyng/dotFiles.git
@@ -66,7 +62,7 @@ WORKDIR /root/.config/nvim/plug/YouCompleteMe/
 RUN /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
 WORKDIR /root/.config/nvim/plug/python-mode
 RUN git checkout tags/0.9.0
-RUN pip install --upgrade pylint pyflakes pep8
+RUN pip install --no-cache-dir --upgrade pylint pyflakes pep8
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
