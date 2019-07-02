@@ -59,10 +59,15 @@ RUN curl -fLo /root/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +PlugInstall +qall
 WORKDIR /root/.config/nvim/plug/YouCompleteMe/
-RUN /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
+RUN /opt/conda/bin/python3 /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
 WORKDIR /root/.config/nvim/plug/python-mode
 RUN git checkout tags/0.9.0
-RUN pip install --no-cache-dir --upgrade pylint pyflakes pep8
+RUN pip install --no-cache-dir --upgrade \
+	pylint \
+	pyflakes \
+	pep8 \
+	neovim \
+	pynvim 
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
