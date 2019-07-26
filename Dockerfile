@@ -45,7 +45,7 @@ RUN mkdir /root/Software
 WORKDIR /root/Software
 RUN git clone https://github.com/karenyyng/dotFiles.git 
 WORKDIR ./dotFiles
-RUN git checkout -b docker origin/docker
+RUN git checkout -b linux origin/linux
 
 ### vim specific settings 
 RUN mkdir -p /root/.config/nvim 
