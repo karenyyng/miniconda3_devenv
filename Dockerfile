@@ -43,6 +43,7 @@ RUN apt install --no-install-recommends -y \
 RUN pip install --no-cache-dir --upgrade neovim
 RUN mkdir /root/Software 
 WORKDIR /root/Software
+RUN echo "force download"
 RUN git clone https://github.com/karenyyng/dotFiles.git 
 WORKDIR ./dotFiles
 RUN git checkout -b linux origin/linux
