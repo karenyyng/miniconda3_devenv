@@ -17,9 +17,9 @@ RUN echo "PATH=$PATH" >> /root/.bashrc
 RUN echo 'deb http://ftp.us.debian.org/debian experimental main' >> /etc/apt/sources.list
 RUN echo 'deb http://ftp.us.debian.org/debian sid main' >> /etc/apt/sources.list
 
-# switch to use python 3.5.2
-# RUN conda install -y python=3.5.2 && conda clean --all
-
+# switch to use python 3.6.8
+# RUN /opt/conda/bin/conda install -y python=3.6.8 && \
+# 	/opt/conda/bin/conda clean --all
 # install libraries needed for installation of other libraries
 RUN apt update -y && apt install --no-install-recommends -y build-essential \
 cmake \
@@ -36,20 +36,16 @@ ENV LC_ALL en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 RUN pip install --no-cache-dir --upgrade gnureadline binstar
 
-
 ### ---------  set up personal work env ------------------
 RUN apt install --no-install-recommends -y \
-exuberant-ctags \
-python3-neovim \
-# for youcompleteme
-python-dev \
-tmux && rm -rf /var/lib/apt/list/*
+	exuberant-ctags \
+	tmux && rm -rf /var/lib/apt/list/*
 RUN pip install --no-cache-dir --upgrade neovim
 RUN mkdir /root/Software
 WORKDIR /root/Software
 RUN git clone https://github.com/karenyyng/dotFiles.git
 WORKDIR ./dotFiles
-RUN git checkout docker
+RUN git checkout -b docker origin/docker
 
 ### vim specific settings
 RUN mkdir -p /root/.config/nvim
@@ -59,8 +55,15 @@ RUN curl -fLo /root/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +PlugInstall +qall
 WORKDIR /root/.config/nvim/plug/YouCompleteMe/
-RUN /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
-RUN pip install --no-cache-dir --upgrade pylint pyflakes pep8
+RUN /opt/conda/bin/python3 /root/.config/nvim/plug/YouCompleteMe/install.py --clang-completer
+# WORKDIR /root/.config/nvim/plug/python-mode
+# RUN git checkout tags/0.9.0
+RUN pip install --no-cache-dir --upgrade \
+	pylint \
+	pyflakes \
+	pep8 \
+	neovim \
+	pynvim
 
 ### copy over other settings
 WORKDIR /root/Software/dotFiles
