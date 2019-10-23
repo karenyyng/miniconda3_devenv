@@ -18,7 +18,7 @@ RUN echo 'deb http://ftp.us.debian.org/debian experimental main' >> /etc/apt/sou
 RUN echo 'deb http://ftp.us.debian.org/debian sid main' >> /etc/apt/sources.list
 
 # # switch to use python 3.5.2
-# RUN conda install -y python=3.5.2 && conda clean --all
+RUN conda install -y python=3.5.6 && conda clean --all
 
 # install libraries needed for installation of other libraries
 RUN apt update -y && apt install --no-install-recommends -y build-essential \ 
